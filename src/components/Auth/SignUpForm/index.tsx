@@ -53,7 +53,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
           const data = form.getValues()
 
           try {
-            signupMutation({
+            await signupMutation({
               variables: {
                 data,
               },
@@ -90,6 +90,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
       let label: string
       let placeholder: string
       let type = 'text'
+      let required = false
 
       switch (name) {
         case 'fullname':
@@ -109,13 +110,14 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
           label = 'Password'
           placeholder = 'Enter password'
           type = 'password'
+          required = true
           break
       }
 
       return (
         <FormControl
           label={label}
-          required
+          required={required}
           helperText={error?.message}
           error={!!error}
         >

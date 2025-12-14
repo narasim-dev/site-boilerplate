@@ -31,13 +31,14 @@ export const UserPageView: React.FC<UserPageViewProps> = ({
     <UserPageViewStyled {...other}>
       {user.fullname && <h1>{user.fullname}</h1>}
 
+      {isEditing ? (
+        <UserEditForm user={user} closeForm={handleCloseForm} />
+      ) : null}
+
       {isCurrentUser && (
         <UserPageActionsStyled>
-          {!isEditing ? (
-            <Button onClick={handleEditClick}>Edit</Button>
-          ) : (
-            <UserEditForm user={user} closeForm={handleCloseForm} />
-          )}
+          <Button onClick={handleEditClick}>Edit</Button>
+
           <SignOutButton />
         </UserPageActionsStyled>
       )}

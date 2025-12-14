@@ -4,13 +4,9 @@ import { Snackbar, SnackbarProvider, useSnackbar } from './index'
 import { Button } from '../Button'
 import { ComponentVariant } from '../interfaces'
 
-const meta: Meta = {
+const meta = {
   title: 'Components/Snackbar',
   component: Snackbar,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
   decorators: [
     (Story) => (
       <SnackbarProvider>
@@ -19,7 +15,7 @@ const meta: Meta = {
       </SnackbarProvider>
     ),
   ],
-}
+} satisfies Meta
 
 export default meta
 

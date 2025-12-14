@@ -51,7 +51,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
           const { username, password } = form.getValues()
 
           try {
-            signinMutation({
+            await signinMutation({
               variables: {
                 where: { username },
                 data: { password },

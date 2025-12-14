@@ -9,19 +9,15 @@ export type SignUpFormData = Pick<
 export const signUpSchema: yup.ObjectSchema<SignUpFormData> = yup
   .object()
   .shape({
-    fullname: yup.string().required('Full name is required'),
+    fullname: yup.string(),
     username: yup
       .string()
-      .required('Username is required')
-      .min(3, 'Username must be at least 3 characters')
-      .matches(
-        /^[a-zA-Z0-9_]+$/,
+      .test(
+        'username-format',
         'Username can only contain letters, numbers and underscores',
+        (value) => !value || /^[a-zA-Z0-9_]+$/.test(value),
       ),
-    email: yup
-      .string()
-      .required('Email is required')
-      .email('Invalid email format'),
+    email: yup.string().email('Invalid email format'),
     password: yup
       .string()
       .required('Password is required')

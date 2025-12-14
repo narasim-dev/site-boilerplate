@@ -29,6 +29,6 @@
     "baseUrl": ".",
     "paths": {}
   },
-  "include": ["next-env.d.ts", "eslint.config.cjs", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "eslint.config.cjs", "**/*.ts", "**/*.tsx", ".storybook/**/*.ts", ".storybook/**/*.tsx"],
   "exclude": ["node_modules", ".next", "dist"]
 }

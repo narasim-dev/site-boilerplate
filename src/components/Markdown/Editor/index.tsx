@@ -91,3 +91,6 @@ const MarkdownEditorComponent: React.FC<MarkdownEditorEditorProps> = ({
 }
 
 export const MarkdownEditor = memo(MarkdownEditorComponent)
+
+// For avoid storybook error
+export default MarkdownEditor

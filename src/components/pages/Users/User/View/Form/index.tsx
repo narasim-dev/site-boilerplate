@@ -17,12 +17,9 @@ import { FormControl } from 'src/ui-kit/FormControl'
 import { Button } from 'src/ui-kit/Button'
 import { ComponentVariant } from 'src/ui-kit/interfaces'
 
-const MarkdownEditor = dynamic(
-  () => import('src/components/Markdown/Editor').then((r) => r.MarkdownEditor),
-  {
-    ssr: false,
-  },
-)
+const MarkdownEditor = dynamic(() => import('src/components/Markdown/Editor'), {
+  ssr: false,
+})
 
 function getDefaultValues(user: UserEditFormProps['user']): UserFormData {
   return {

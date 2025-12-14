@@ -1,39 +1,72 @@
-import { useCallback, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { SignInForm as Component, SignInFormProps } from './index'
+import { SignInForm as Component } from './index'
+import { SigninDocument, SigninMutation } from 'src/gql/generated'
+import { RequestType } from '.storybook/addons/msw/msw-adapter'
 
 type Props = Parameters<typeof Component>[0]
 
-function Renderer({ loading: loadingInitial, ...other }: Props) {
-  const [loading, setLoading] = useState(loadingInitial ?? false)
-
-  const handleSubmit = useCallback<
-    NonNullable<SignInFormProps['onSuccessHandler']>
-  >(async () => {
-    setLoading(true)
-    // Simulate API request
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setLoading(false)
-  }, [])
-
-  return (
-    <Component {...other} loading={loading} onSuccessHandler={handleSubmit} />
-  )
-}
-
 const meta = {
   title: 'Components/Auth/SignInForm',
-  component: Renderer,
-} satisfies Meta<typeof Renderer>
+  component: Component,
+  parameters: {
+    appContext: {
+      user: null,
+    },
+  },
+} satisfies Meta<Props>
 
 export default meta
 
-type Story = StoryObj<typeof Renderer>
+type Story = StoryObj<Props>
 
-export const Default: Story = {}
+export const Default: Story = {
+  parameters: {
+    msw: {
+      mocks: [
+        {
+          type: RequestType.GRAPHQL,
+          query: SigninDocument,
+          response: (): { data: SigninMutation } => ({
+            data: {
+              response: {
+                __typename: 'AuthPayload',
+                success: true,
+                message: 'Login successful',
+                token: 'mock-jwt-token-12345',
+              },
+            },
+          }),
+        },
+      ],
+    },
+  },
+}
 
 export const Loading: Story = {
   args: {
     loading: true,
+  },
+}
+
+export const InvalidCredentials: Story = {
+  parameters: {
+    msw: {
+      mocks: [
+        {
+          type: RequestType.GRAPHQL,
+          query: SigninDocument,
+          response: (): { data: SigninMutation } => ({
+            data: {
+              response: {
+                __typename: 'AuthPayload',
+                success: false,
+                message: 'Invalid username or password',
+                token: null,
+              },
+            },
+          }),
+        },
+      ],
+    },
   },
 }

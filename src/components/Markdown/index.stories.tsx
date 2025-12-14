@@ -4,9 +4,7 @@ import { Markdown } from './index'
 const meta = {
   title: 'Components/Markdown',
   component: Markdown,
-  parameters: {
-    // layout: 'centered',
-  },
+
   tags: ['autodocs'],
   args: {
     children: '',

@@ -1,39 +1,72 @@
-import { useCallback, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { SignUpForm as Component, SignUpFormProps } from './index'
+import { SignUpForm as Component } from './index'
+import { SignupDocument, SignupMutation } from 'src/gql/generated'
+import { RequestType } from '.storybook/addons/msw/msw-adapter'
 
 type Props = Parameters<typeof Component>[0]
 
-function Renderer({ loading: loadingInitial, ...other }: Props) {
-  const [loading, setLoading] = useState(loadingInitial ?? false)
-
-  const handleSubmit = useCallback<
-    NonNullable<SignUpFormProps['onSuccessHandler']>
-  >(async () => {
-    setLoading(true)
-    // Simulate API request
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setLoading(false)
-  }, [])
-
-  return (
-    <Component {...other} loading={loading} onSuccessHandler={handleSubmit} />
-  )
-}
-
 const meta = {
   title: 'Components/Auth/SignUpForm',
-  component: Renderer,
-} satisfies Meta<typeof Renderer>
+  component: Component,
+  parameters: {
+    appContext: {
+      user: null,
+    },
+  },
+} satisfies Meta<Props>
 
 export default meta
 
-type Story = StoryObj<typeof Renderer>
+type Story = StoryObj<Props>
 
-export const Default: Story = {}
+export const Default: Story = {
+  parameters: {
+    msw: {
+      mocks: [
+        {
+          type: RequestType.GRAPHQL,
+          query: SignupDocument,
+          response: (): { data: SignupMutation } => ({
+            data: {
+              response: {
+                __typename: 'AuthPayload',
+                success: true,
+                message: 'Registration successful',
+                token: 'mock-jwt-token-12345',
+              },
+            },
+          }),
+        },
+      ],
+    },
+  },
+}
 
 export const Loading: Story = {
   args: {
     loading: true,
+  },
+}
+
+export const UserAlreadyExists: Story = {
+  parameters: {
+    msw: {
+      mocks: [
+        {
+          type: RequestType.GRAPHQL,
+          query: SignupDocument,
+          response: (): { data: SignupMutation } => ({
+            data: {
+              response: {
+                __typename: 'AuthPayload',
+                success: false,
+                message: 'User with this email already exists',
+                token: null,
+              },
+            },
+          }),
+        },
+      ],
+    },
   },
 }

@@ -35,7 +35,7 @@ async function startServer() {
     createProxyMiddleware({
       target: `http://localhost:${graphqlPort}/api`,
       changeOrigin: true,
-      ws: true,
+      ws: false,
     }),
   )
 

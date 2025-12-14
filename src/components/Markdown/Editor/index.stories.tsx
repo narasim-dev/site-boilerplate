@@ -5,9 +5,7 @@ import { MarkdownEditor as Component } from './index'
 const meta = {
   title: 'Components/MarkdownEditor',
   component: Component,
-  parameters: {
-    // layout: 'centered',
-  },
+
   tags: ['autodocs'],
   args: {
     value: '',

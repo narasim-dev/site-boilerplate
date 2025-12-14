@@ -28,12 +28,14 @@ function getEndpoint() {
 
   if (origin && process.env.NODE_ENV !== 'test') {
     endpoint = `${origin}/api/`
-  } else {
+  } else if (typeof window === 'undefined' && typeof require !== 'undefined') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const os = require('os')
     const hostname = os.hostname()
     const PORT = (process.env.PORT && parseInt(process.env.PORT, 10)) || 3000
     endpoint = `http://${hostname}:${PORT}/api/`
+  } else {
+    endpoint = `${window.location.origin}/api/`
   }
 
   return endpoint
@@ -70,7 +72,9 @@ export function getWsClient(withWs: boolean) {
 
       if (typeof localStorage !== 'undefined') {
         const token = localStorage.getItem('token')
-        if (token) params.Authorization = token
+        if (token) {
+          params.Authorization = `Bearer ${token}`
+        }
       }
 
       return params
@@ -148,15 +152,15 @@ function createApolloClient({ withWs, appContext }: createApolloClientProps) {
         headers = { ...appContext?.ctx.req?.headers }
       }
 
-      const authorization =
+      const token =
         (typeof globalThis !== 'undefined' && 'localStorage' in globalThis
           ? globalThis.localStorage?.getItem('token')
           : null) || null
 
-      if (authorization) {
+      if (token) {
         headers = {
           ...headers,
-          authorization,
+          authorization: `Bearer ${token}`,
         }
       }
 
