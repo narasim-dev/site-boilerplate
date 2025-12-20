@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { UserPageView as Component } from '../'
 import {
-  UserFragment,
   MeDocument,
   MeQuery,
   UpdateCurrentUserDocument,
@@ -12,27 +11,9 @@ import {
   GraphQLRequestContext,
 } from '.storybook/addons/msw/msw-adapter'
 
+import { mockCurrentUser, mockViewedUser } from '.storybook/mocks/user'
+
 type Props = Parameters<typeof Component>[0]
-
-const mockViewedUser: UserFragment = {
-  __typename: 'User',
-  id: 'user-1',
-  username: 'johndoe',
-  fullname: 'John Doe',
-  createdAt: new Date('2024-01-01'),
-  image: null,
-  content: 'Hello, I am John Doe!',
-}
-
-const mockCurrentUser: UserFragment = {
-  __typename: 'User',
-  id: 'current-user-id',
-  username: 'currentuser',
-  fullname: 'Current User',
-  createdAt: new Date('2024-01-01'),
-  image: null,
-  content: 'I am the current user.',
-}
 
 const meta = {
   title: 'pages/Users/User/View',

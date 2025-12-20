@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react'
 import { Button } from 'src/ui-kit/Button'
 import { SignOutButton } from 'src/components/Auth/SignOutButton'
 import { useAppContext } from 'src/components/AppContext'
+import { Markdown } from 'src/components/Markdown'
 
 type UserPageViewProps = {
   user: UserFragment
@@ -30,6 +31,8 @@ export const UserPageView: React.FC<UserPageViewProps> = ({
   return (
     <UserPageViewStyled {...other}>
       {user.fullname && <h1>{user.fullname}</h1>}
+
+      <Markdown>{user.content}</Markdown>
 
       {isEditing ? (
         <UserEditForm user={user} closeForm={handleCloseForm} />
