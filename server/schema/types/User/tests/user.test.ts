@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { print } from 'graphql'
-import { graphqlRequest } from '../setup/testClient'
 import {
   UsersConnectionDocument,
   UsersConnectionQuery,
@@ -21,6 +20,7 @@ import {
   UpdateCurrentUserMutation,
   UpdateCurrentUserMutationVariables,
 } from 'src/gql/generated/updateCurrentUser'
+import { graphqlRequest } from 'server/tests/api/setup/testClient'
 
 describe('User API (e2e)', () => {
   it('returns users list', async () => {
@@ -112,5 +112,48 @@ describe('User API (e2e)', () => {
       (u) => u.id === userId,
     )
     expect(createdUser).toBeDefined()
+  })
+
+  it('rejects updateCurrentUser when content contains invalid/unclosed tag', async () => {
+    const signupVars: SignupMutationVariables = {
+      data: {
+        email: 'invalid-mdx@example.com',
+        password: 'password123',
+        username: 'invalidmdx',
+        fullname: 'Invalid MDX',
+      },
+    }
+    const signupRes = await graphqlRequest<SignupMutation>(
+      print(SignupDocument),
+      signupVars,
+    )
+    expect(signupRes.errors).toBeUndefined()
+
+    const signinVars: SigninMutationVariables = {
+      where: { email: 'invalid-mdx@example.com' },
+      data: { password: 'password123' },
+    }
+    const signinRes = await graphqlRequest<SigninMutation>(
+      print(SigninDocument),
+      signinVars,
+    )
+
+    expect(signinRes.errors).toBeUndefined()
+    const token = signinRes.data?.response?.token
+    expect(token).toBeTypeOf('string')
+
+    const updateVars: UpdateCurrentUserMutationVariables = {
+      data: {
+        content: 'Broken tag: <script>alert("xss")\n\nNo closing tag.',
+      },
+    }
+    const updateRes = await graphqlRequest<UpdateCurrentUserMutation>(
+      print(UpdateCurrentUserDocument),
+      updateVars,
+      token || undefined,
+    )
+
+    expect(updateRes.data?.response).toBeNull()
+    expect(updateRes.errors?.length).toBeGreaterThan(0)
   })
 })

@@ -96,6 +96,17 @@ export const WithReactComponents: Story = {
   },
 }
 
+export const BrokenHtmlLikeTagsCrashes: Story = {
+  args: {
+    children:
+      '# Broken HTML-like tags\n\n' +
+      'This is intentionally invalid to reproduce the crash:\n\n' +
+      '<script>alert("xss")</script>\n\n' +
+      '<unknown-tag>unknown-tag</unknown-tag>\n\n' +
+      'No closing tag above.',
+  },
+}
+
 export const ComplexExample: Story = {
   args: {
     children: `# Комплексный пример
@@ -122,9 +133,6 @@ function hello() {
 }
 \`\`\`
 
-## Изображение
-
-![Пример изображения](https://via.placeholder.com/150)
 
 ## Список с задачами
 
