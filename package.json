@@ -11,7 +11,7 @@
     "build:analyze": "cross-env ANALYZE=true npm run build",
     "copy-statics": "copyfiles -u 1 \"server/**/*.graphql\" \"server/**/*.md\" dist/server/",
     "clean": "rimraf ./dist && rimraf ./.next",
-    "start": "cross-env NODE_ENV=production node dist/server/server/index.js",
+    "start": "cross-env NODE_ENV=production TS_NODE_BASEURL=./dist/server node -r tsconfig-paths/register dist/server/server/index.js",
     "types": "tsc --noEmit",
     "types:watch": "tsc --noEmit --watch",
     "types:server": "npx tsc --noEmit -P tsconfig.server.json",
