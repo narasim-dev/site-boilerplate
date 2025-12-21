@@ -76,6 +76,8 @@ module.exports = [
         },
       ],
       '@typescript-eslint/no-deprecated': 'error',
+      curly: ['error', 'all'],
+      eqeqeq: ['error', 'always'],
     },
   },
   {
