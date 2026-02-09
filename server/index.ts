@@ -3,6 +3,7 @@ import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import './prisma'
 import { setupGraphqlServer } from './graphqlServer'
+import { generateSitemap, SitemapSection } from './sitemap'
 
 const cwd = process.cwd()
 const port = (process.env.PORT && parseInt(process.env.PORT, 10)) || 3000
@@ -26,6 +27,7 @@ async function startServer() {
   await app.prepare()
 
   const server = express()
+  server.set('trust proxy', true)
 
   // Static files from shared (uploads, not tracked)
   server.use('/shared', express.static(cwd + '/shared'))
@@ -39,6 +41,10 @@ async function startServer() {
       ws: false,
     }),
   )
+
+  server.get(Object.values(SitemapSection), (req, res) => {
+    return generateSitemap(req, res)
+  })
 
   // Next.js handles everything else
   server.get('*', (req, res) => {
